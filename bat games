@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ምናባዊ የውርርድ ጨዋታ (Betting Game Prototype)</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0f172a; color: #f8fafc; text-align: center; padding: 20px; }
+        .card { background-color: #1e293b; max-width: 450px; margin: 40px auto; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        h1 { color: #38bdf8; margin-bottom: 5px; }
+        .balance-box { background: #334155; padding: 15px; border-radius: 8px; font-size: 1.2rem; font-weight: bold; margin: 20px 0; border: 1px solid #475569; }
+        .balance-amount { color: #4ade80; }
+        .input-group { margin: 15px 0; text-align: left; }
+        label { display: block; margin-bottom: 5px; color: #cbd5e1; }
+        input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 1rem; }
+        .btn-group { display: flex; gap: 10px; margin: 20px 0; }
+        .btn { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 1rem; }
+        .btn-heads { background: #3b82f6; color: white; }
+        .btn-tails { background: #ec4899; color: white; }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .result-box { margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: bold; display: none; }
+        .win { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid #22c55e; }
+        .lose { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>🎲 የሳንቲም ውርርድ</h1>
+        <p style="color: #94a3b8; font-size: 0.9rem;">ምናባዊ ነጥቦችን በመጠቀም ይጫወቱ</p>
+
+        <div class="balance-box">
+            የአሁኑ ሂሳብዎ፡ <span id="balance" class="balance-amount">$100.00</span>
+        </div>
+
+        <div class="input-group">
+            <label for="betAmount">የመደቡት ገንዘብ መጠን ($):</label>
+            <input type="number" id="betAmount" value="10" min="1" placeholder="መጠን ያስገቡ">
+        </div>
+
+        <p style="color: #cbd5e1; margin-bottom: 10px;">የሚመርጡትን ይምረጡ፡</p>
+        <div class="btn-group">
+            <button class="btn btn-heads" onclick="playGame('Heads')">HEADS (ሰው)</button>
+            <button class="btn btn-tails" onclick="playGame('Tails')">TAILS (ፅሁፍ)</button>
+        </div>
+
+        <div id="result" class="result-box"></div>
+    </div>
+
+    <script>
+        let currentBalance = 100.00;
+
+        function playGame(choice) {
+            const betInput = document.getElementById('betAmount');
+            const betAmount = parseFloat(betInput.value);
+            const resultDiv = document.getElementById('result');
+            const balanceSpan = document.getElementById('balance');
+
+            if (isNaN(betAmount) || betAmount <= 0) {
+                alert('እባክዎን ትክክለኛ የገንዘብ መጠን ያስገቡ!');
+                return;
+            }
+
+            if (betAmount > currentBalance) {
+                alert('የተደደበው ገንዘብ ካለዎት ሂሳብ ይበልጣል!');
+                return;
+            }
+
+            const options = ['Heads', 'Tails'];
+            const outcome = options[Math.floor(Math.random() * options.length)];
+
+            if (choice === outcome) {
+                currentBalance += betAmount;
+                resultDiv.className = 'result-box win';
+                resultDiv.innerHTML = `🎉 እንኳን ደስ አለዎት! ውጤቱ <b>${outcome}</b> ነበር። $${betAmount} አሸንፈዋል!`;
+            } else {
+                currentBalance -= betAmount;
+                resultDiv.className = 'result-box lose';
+                resultDiv.innerHTML = `❌ አዝነናል! ውጤቱ <b>${outcome}</b> ነበር። $${betAmount} ተሸንፈዋል።`;
+            }
+
+            balanceSpan.innerText = `$${currentBalance.toFixed(2)}`;
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
